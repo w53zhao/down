@@ -1,10 +1,25 @@
-var express = require('express');
-var app = express();
-var yelp = require('./api/yelp');
-var Venue = require('./venue');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const user = require('./api/user');
+const yelp = require('./api/yelp');
+const Venue = require('./venue');
+
+app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
     res.send('Hello World!');
+});
+
+app.post('/login', function(req, res) {
+    var body = req.body;
+    var id = body.id;
+    var firstName = body.firstName;
+    var lastName = body.lastName;
+    var profileImage = body.profileImage;
+
+    user.login(id, firstName, lastName, profileImage);
+    res.send({'success': true});
 });
 
 app.get('/venues', function(req, res) {
@@ -21,7 +36,7 @@ app.get('/venues', function(req, res) {
                 venues.push(new Venue(results.businesses[i]));
             }
             res.send(venues);
-        })
+        });
 });
 
 app.listen(process.env.PORT || 5000);
