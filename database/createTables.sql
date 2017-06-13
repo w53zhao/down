@@ -11,7 +11,7 @@ CREATE TABLE "friend_status" (
     action_user_id BIGINT NOT NULL,
     status INTEGER NOT NULL,
     PRIMARY KEY(user_one_id, user_two_id),
-    FOREIGN KEY(user_one_id) REFERENCES user_info(user_id),
-    FOREIGN KEY(user_two_id) REFERENCES user_info(user_id),
-    FOREIGN KEY(action_user_id) REFERENCES user_info(user_id)
+    FOREIGN KEY(user_one_id) REFERENCES user_info(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(user_two_id) REFERENCES user_info(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(action_user_id) REFERENCES user_info(user_id) ON DELETE CASCADE
 );

@@ -18,8 +18,27 @@ app.post('/login', function(req, res) {
     var lastName = body.lastName;
     var profileImage = body.profileImage;
 
-    user.login(id, firstName, lastName, profileImage);
-    res.send({'success': true});
+    user.login(id, firstName, lastName, profileImage)
+        .then(function() {
+            res.send({'success': true});
+        })
+        .catch(function(error) {
+            res.send({'success': false, 'error': error});
+        });
+});
+
+app.post('/friend/add', function(req, res) {
+   var body = req.body;
+   var senderId = body.senderId;
+   var receiverId = body.receiverId;
+
+   user.sendFriendRequest(senderId, receiverId)
+       .then(function() {
+           res.send({'success': true});
+       })
+       .catch(function(error) {
+           res.send({'success': false, 'error': error});
+       });
 });
 
 app.get('/venues', function(req, res) {
