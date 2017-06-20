@@ -5,6 +5,7 @@ const user = require('./api/user');
 const event = require('./api/event');
 const yelp = require('./api/yelp');
 const Venue = require('./venue');
+const User = require('./user');
 
 app.use(bodyParser.json());
 
@@ -25,6 +26,19 @@ app.post('/login', function(req, res) {
         })
         .catch(function(error) {
             res.send({'success': false, 'error': error});
+        });
+});
+
+app.get('/friends/:userId', function(req, res) {
+    var userId = req.params.userId;
+
+    user.getFriendList(userId)
+        .then(function(results) {
+            var friends = [];
+            for (var i = 0; i < results.length; i++) {
+                friends.push(new User(results[i]));
+            }
+            res.send(friends);
         });
 });
 

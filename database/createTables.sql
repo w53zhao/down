@@ -28,6 +28,14 @@ CREATE TABLE "event_details" (
     FOREIGN KEY(event_id) REFERENCES event_status(event_id) ON DELETE CASCADE
 );
 
+CREATE TABLE "user_friends" (
+    user_one_id BIGINT NOT NULL,
+    user_two_id BIGINT NOT NULL,
+    PRIMARY KEY(user_one_id, user_two_id),
+    FOREIGN KEY(user_one_id) REFERENCES user_info(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(user_two_id) REFERENCES user_info(user_id) ON DELETE CASCADE
+);
+
 CREATE TABLE "friend_status" (
     user_one_id BIGINT NOT NULL,
     user_two_id BIGINT NOT NULL,
