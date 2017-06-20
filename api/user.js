@@ -22,6 +22,6 @@ module.exports = {
     sendFriendRequest: function(senderId, receiverId) {
         var userOneId = Math.min(senderId, receiverId);
         var userTwoId = Math.max(senderId, receiverId);
-        return connection.query(SEND_FRIEND_REQUEST, [userOneId, userTwoId, senderId, STATUS_PENDING])
+        return connection.query(SEND_FRIEND_REQUEST, [userOneId, userTwoId, senderId, STATUS_PENDING]);
     }
-}
+};
