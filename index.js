@@ -3,8 +3,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const user = require('./api/user');
 const event = require('./api/event');
-const yelp = require('./api/yelp');
-const Venue = require('./venue');
 const User = require('./user');
 
 app.use(bodyParser.json());
@@ -32,28 +30,21 @@ app.post('/login', function(req, res) {
 app.get('/friends/:userId', function(req, res) {
     var userId = req.params.userId;
 
-    user.getFriendList(userId)
+    user.getFriendsList(userId)
         .then(function(results) {
             var friends = [];
             for (var i = 0; i < results.length; i++) {
                 friends.push(new User(results[i]));
             }
             res.send(friends);
+        })
+        .catch(function(error) {
+            res.send({'success': false, 'error': error});
         });
 });
 
-app.post('/friend/add', function(req, res) {
-   var body = req.body;
-   var senderId = body.senderId;
-   var receiverId = body.receiverId;
-
-   user.sendFriendRequest(senderId, receiverId)
-       .then(function() {
-           res.send({'success': true});
-       })
-       .catch(function(error) {
-           res.send({'success': false, 'error': error});
-       });
+app.get('/events/:userId', function(req, res) {
+    var userId = req.params.userId;
 });
 
 app.post('/event/sendRequest', function(req, res) {
@@ -63,8 +54,9 @@ app.post('/event/sendRequest', function(req, res) {
    var senderLatitude = body.latitude;
    var senderLongitude = body.longitude;
    var eventTime = body.eventTime;
+   var venueType = body.venueType;
 
-   event.sendEventRequest(senderId, receiverId, senderLatitude, senderLongitude, eventTime)
+   event.sendEventRequest(senderId, receiverId, senderLatitude, senderLongitude, eventTime, venueType)
        .then(function(results) {
            res.send({'success': true, 'eventId': results});
        })
@@ -99,23 +91,6 @@ app.post('/event/decline', function(req,res) {
        .catch(function(error){
             res.send({'success': false, 'error': error});
        });
-});
-
-app.get('/venues', function(req, res) {
-    var query = req.query;
-    var event = query.event || 0;
-    var venue = query.venue;
-    var latitude = query.latitude;
-    var longitude = query.longitude;
-
-    yelp.search(event, venue, latitude, longitude)
-        .then(function(results) {
-            var venues = [];
-            for (var i = 0; i < results.businesses.length; i++) {
-                venues.push(new Venue(results.businesses[i]));
-            }
-            res.send(venues);
-        });
 });
 
 app.listen(process.env.PORT || 5000);

@@ -1,25 +1,32 @@
-var Yelp = require('node-yelp-fusion');
-var yelp = new Yelp({
+const Yelp = require('node-yelp-fusion');
+const yelp = new Yelp({
     id: 'Fhpp8i_pXmQ_rszyX3ru1Q',
     secret: 'DZgzafJq7iAV5NnTMZCMXTzXNsU47U2RRR8OOsd0OhMnrF2awTfKwnh36TndGyb9'
 });
-var geolib = require('geolib');
+
+const geolib = require('geolib');
+const db = require('../database/config');
+const connection = db.getConnection();
+
+const GET_LOCATIONS = "SELECT sender_latitude, sender_longitude, receiver_latitude, receiver_longitude, venue_type FROM event_details WHERE event_id = $1";
 
 module.exports = {
-    search: function(event, venue, latitude, longitude) {
-        // query db with event to get sender coordinates
-        var locations = [
-            {latitude: 43.4717443, longitude: -80.5475369},
-            {latitude: latitude, longitude: longitude}
-        ];
-        var center = geolib.getCenter(locations);
+    search: function(eventId) {
+        return connection.query(GET_LOCATIONS, eventId)
+            .then(function(row) {
+                var locations = [
+                    {latitude: row[0].sender_latitude, longitude: row[0].sender_longitude},
+                    {latitude: row[0].receiver_latitude, longitude: row[0].receiver_longitude}
+                ];
+                var center = geolib.getCenter(locations);
 
-        return yelp.search(
-            "categories=" + venue +
-            "&latitude=" + center.latitude +
-            "&longitude=" + center.longitude +
-            "&limit=5" +
-            "&sort_by=distance"
-        );
+                return yelp.search(
+                    "categories=" + row[0].venue_type +
+                    "&latitude=" + center.latitude +
+                    "&longitude=" + center.longitude +
+                    "&limit=5" +
+                    "&sort_by=distance"
+                );
+            });
     }
 };

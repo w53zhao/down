@@ -20,11 +20,12 @@ CREATE TABLE "event_details" (
     sender_longitude DOUBLE PRECISION NOT NULL,
     receiver_latitude DOUBLE PRECISION,
     receiver_longitude DOUBLE PRECISION,
-    sender_vote JSONB,
-    receiver_vote JSONB,
-    yelp_results JSONB,
+    venue_type TEXT NOT NULL,
+    sender_vote TEXT[],
+    receiver_vote TEXT[],
+    yelp_results TEXT[],
     event_time TIMESTAMP,
-    location JSONB,
+    location TEXT,
     FOREIGN KEY(event_id) REFERENCES event_status(event_id) ON DELETE CASCADE
 );
 
