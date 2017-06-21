@@ -36,7 +36,7 @@ module.exports = {
                         }
                         connection.query(UPDATE_YELP_RESULTS, [venues, eventId]);
                     });
-            })
+            });
     },
 
     declineEvent: function(eventId){

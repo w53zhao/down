@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const user = require('./api/user');
 const event = require('./api/event');
 const User = require('./user');
+const Event = require('./event');
 
 app.use(bodyParser.json());
 
@@ -45,6 +46,20 @@ app.get('/friends/:userId', function(req, res) {
 
 app.get('/events/:userId', function(req, res) {
     var userId = req.params.userId;
+
+    user.getEvents(userId)
+        .then(function(results) {
+            var events = results.events;
+            var friends = results.friends;
+            var results = [];
+            for (var i = 0; i < events.length; i++) {
+                results.push(new Event(events[i], friends, userId));
+            }
+            res.send(results);
+        })
+        .catch(function(error) {
+            res.send({'success': false, 'error': error});
+        });
 });
 
 app.post('/event/sendRequest', function(req, res) {
