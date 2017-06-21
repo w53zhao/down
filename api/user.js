@@ -18,13 +18,6 @@ module.exports = {
             });
     },
 
-    getUserInfo: function(id) {
-        return connection.query(USER_EXISTS, [id])
-            .then(function(row) {
-                return new User(row[0]);
-            });
-    },
-
     getFriendsList: function(id) {
         return connection.query(GET_FRIENDS, [id])
             .then(function(rows) {
