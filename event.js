@@ -17,6 +17,9 @@ function Event(data, friends, userId) {
 
     // location
     this.location = data.location;
+
+    // time
+    this.time = data.event_time;
 }
 
 module.exports = Event;
