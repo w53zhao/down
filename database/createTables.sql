@@ -25,7 +25,7 @@ CREATE TABLE "event_details" (
     receiver_vote TEXT[],
     yelp_results TEXT[],
     event_time TIMESTAMP,
-    location TEXT,
+    location JSONB,
     FOREIGN KEY(event_id) REFERENCES event_status(event_id) ON DELETE CASCADE
 );
 

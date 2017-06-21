@@ -14,6 +14,9 @@ function Event(data, friends, userId) {
     // other participant
     if (data.sender_id == userId) this.otherParticipant = friends[data.receiver_id];
     else this.otherParticipant = friends[data.sender_id];
+
+    // location
+    this.location = data.location;
 }
 
 module.exports = Event;

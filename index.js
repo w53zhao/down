@@ -12,6 +12,11 @@ app.get('/', function(req, res) {
     res.send('Hello World!');
 });
 
+/*app.get('/test', function(req, res) {
+    event.test();
+    res.send(true);
+});*/
+
 app.post('/login', function(req, res) {
     var body = req.body;
     var id = body.id;
