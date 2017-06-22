@@ -6,9 +6,15 @@ function Event(data, friends, userId) {
 
     // status
     if (data.status == 1) {
-        this.status = "finalized";
+        if ((data.sender_id == userId && data.sender_vote == null) || (data.receiver_id == userId && data.receiver_vote == null)) {
+            this.status = "needToVote";
+        } else if ((data.sender_id == userId && data.receiver_vote == null) || (data.receiver_id == userId && data.sender_vote == null)) {
+            this.status = "waitingForVote";
+        } else {
+            this.status = "finalized";
+        }
     } else {
-        this.status = data.sender_id == userId ? "pending" : "actionRequired";
+        this.status = data.sender_id == userId ? "waitingForResponse" : "needToRespond";
     }
 
     // other participant

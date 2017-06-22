@@ -6,7 +6,7 @@ const USER_EXISTS = "SELECT * FROM user_info WHERE user_id = $1";
 const ADD_USER = "INSERT INTO user_info VALUES($1, $2, $3, $4)";
 const GET_FRIENDS = "SELECT * FROM user_friends WHERE (user_one_id = $1 OR user_two_id = $1)";
 const GET_FRIENDS_INFO = "SELECT * FROM user_info WHERE user_id = ANY($1::BIGINT[])"
-const GET_EVENTS = "SELECT s.event_id, s.sender_id, s.receiver_id, s.status, d.event_time, d.location FROM event_status s JOIN event_details d ON s.event_id = d.event_id WHERE (s.sender_id = $1 OR s.receiver_id = $1) AND NOT s.status = 2";
+const GET_EVENTS = "SELECT s.event_id, s.sender_id, s.receiver_id, s.status, d.event_time, d.location, d.sender_vote, d.receiver_vote FROM event_status s JOIN event_details d ON s.event_id = d.event_id WHERE (s.sender_id = $1 OR s.receiver_id = $1) AND NOT s.status = 2";
 
 module.exports = {
     login: function(id, firstName, lastName, profileImage) {
