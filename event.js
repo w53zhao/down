@@ -28,7 +28,16 @@ function Event(data, friends, userId) {
     this.time = data.event_time;
 
     // yelp
-    this.yelpResults = data.yelp_results;
+    var yelpResults = data.yelp_results;
+    if (yelpResults !== null) {
+        var yelp = [];
+        for (var i = 0; i < yelpResults.length; i++) {
+            yelp.push(JSON.parse(yelpResults[i]));
+        }
+        this.yelpResults = yelp;
+    } else {
+        this.yelpResults = null;
+    }
 }
 
 module.exports = Event;
