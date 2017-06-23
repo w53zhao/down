@@ -26,6 +26,9 @@ function Event(data, friends, userId) {
 
     // time
     this.time = data.event_time;
+
+    // yelp
+    this.yelpResults = data.yelp_results;
 }
 
 module.exports = Event;
