@@ -116,7 +116,14 @@ app.post('/event/vote', function(req, res) {
 
    event.vote(eventId, userId, votes)
        .then(function(results) {
-           res.send(results);
+           event.getEventDetails(eventId, userId)
+               .then(function(results) {
+                   var event = new Event(results.event, results.friend, userId);
+                   res.send(event);
+               })
+               .catch(function(error) {
+                   res.send({'success': false, 'error': error});
+               })
        })
        .catch(function(error) {
            res.send({'success': false, 'error': error});

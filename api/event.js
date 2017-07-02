@@ -1,10 +1,9 @@
 const db = require('../database/config');
 const connection = db.getConnection();
-
 const yelp = require('./yelp');
 const Venue = require('../venue');
-
 const intersection = require('array-intersection');
+const User = require('../user');
 
 const SEND_EVENT_REQUEST = "INSERT INTO event_status(sender_id, receiver_id, status) VALUES($1, $2, $3) RETURNING event_id";
 const UPDATE_EVENT_STATUS = "UPDATE event_status SET status = $1 WHERE event_id = $2";
@@ -13,16 +12,41 @@ const UPDATE_RECEIVER_LOCATION = "UPDATE event_details SET receiver_latitude = $
 const UPDATE_YELP_RESULTS = "UPDATE event_details SET yelp_results = $1 WHERE event_id = $2";
 const DELETE_EVENT_DETAILS = "DELETE FROM event_details WHERE event_id = $1";
 const GET_EVENT = "SELECT * FROM event_status WHERE event_id = $1";
+const GET_EVENT_DETAILS = "SELECT s.event_id, s.sender_id, s.receiver_id, s.status, d.event_time, d.location, d.sender_vote, d.receiver_vote, d.yelp_results FROM event_status s JOIN event_details d ON s.event_id = d.event_id WHERE s.event_id = $1";
 const SENDER_VOTE = "UPDATE event_details SET sender_vote = $1 WHERE event_id = $2";
 const RECEIVER_VOTE = "UPDATE event_details SET receiver_vote = $1 WHERE event_id = $2";
 const GET_VOTES = "SELECT sender_vote, receiver_vote, yelp_results FROM event_details WHERE event_id = $1";
 const UPDATE_LOCATION = "UPDATE event_details SET location = $1 WHERE event_id = $2";
+const GET_FRIEND_INFO = "SELECT * FROM user_info WHERE user_id = $1";
 
 const STATUS_PENDING = 0;
 const STATUS_ACCEPTED = 1;
 const STATUS_DECLINED = 2;
 
 module.exports = {
+    getEventDetails: function(eventId, userId) {
+        return connection.query(GET_EVENT_DETAILS, [eventId])
+            .then(function(event) {
+                var friend = userId == event[0].sender_id ? event[0].receiver_id : event[0].sender_id;
+                return connection.query(GET_FRIEND_INFO, [friend])
+                    .then(function(friend) {
+                        return {
+                            'event': event[0],
+                            'friend': friend[0]
+                        }
+                    })
+                    .then(function(results) {
+                        var event = results.event;
+                        var friend = results.friend;
+                        var users = {};
+                        users[friend.user_id] = new User(friend);
+                        return {
+                            'event': event,
+                            'friend': users
+                        }
+                    })
+            });
+    },
     sendEventRequest: function(senderId, receiverId, senderLatitude, senderLongitude, eventTime, venueType) {
         return connection.query(SEND_EVENT_REQUEST, [senderId, receiverId, STATUS_PENDING])
             .then(function(results) {
