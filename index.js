@@ -12,11 +12,6 @@ app.get('/', function(req, res) {
     res.send('Hello World!');
 });
 
-/*app.get('/test', function(req, res) {
-    event.test();
-    res.send(true);
-});*/
-
 app.post('/login', function(req, res) {
     var body = req.body;
     var id = body.id;
@@ -108,8 +103,23 @@ app.post('/event/decline', function(req,res) {
        .then(function(){
             res.send({'success': true});
        })
-       .catch(function(error){
+       .catch(function(error) {
             res.send({'success': false, 'error': error});
+       });
+});
+
+app.post('/event/vote', function(req, res) {
+   var body = req.body;
+   var eventId = body.eventId;
+   var userId = body.userId;
+   var votes = body.votes;
+
+   event.vote(eventId, userId, votes)
+       .then(function(results) {
+           res.send(results);
+       })
+       .catch(function(error) {
+           res.send({'success': false, 'error': error});
        });
 });
 

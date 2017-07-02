@@ -28,15 +28,13 @@ function Event(data, friends, userId) {
     this.time = data.event_time;
 
     // yelp
-    var yelpResults = data.yelp_results;
-    if (yelpResults !== null) {
+    if (this.status == "needToVote") {
+        var yelpResults = data.yelp_results;
         var yelp = [];
         for (var i = 0; i < yelpResults.length; i++) {
             yelp.push(JSON.parse(yelpResults[i]));
         }
         this.yelpResults = yelp;
-    } else {
-        this.yelpResults = null;
     }
 }
 
