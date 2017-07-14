@@ -130,6 +130,17 @@ app.post('/event/vote', function(req, res) {
        });
 });
 
+app.get('/event/:eventId/:userId', function(req, res) {
+    var eventId = req.params.eventId;
+    var userId = req.params.userId;
+
+    event.getEventDetails(eventId, userId)
+        .then(function(results) {
+            var event = new Event(results.event, results.friend, userId);
+            res.send(event);
+        });
+});
+
 app.listen(process.env.PORT || 5000);
 
 
