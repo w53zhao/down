@@ -87,8 +87,8 @@ app.post('/event/accept', function(req, res) {
    var latitude = body.latitude;
 
     event.acceptEvent(eventId, latitude, longitude)
-        .then(function() {
-            res.send({'success': true});
+        .then(function(results) {
+            res.send(results);
         })
         .catch(function(error) {
             res.send({'success': false, 'error': error});

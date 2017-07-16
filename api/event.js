@@ -59,13 +59,14 @@ module.exports = {
         return connection.query(UPDATE_EVENT_STATUS, [STATUS_ACCEPTED, eventId])
             .then(function() {
                 connection.query(UPDATE_RECEIVER_LOCATION, [latitude, longitude, eventId]);
-                yelp.search(eventId)
+                return yelp.search(eventId)
                     .then(function(results) {
                         var venues = [];
                         for (var i = 0; i <results.businesses.length; i++) {
                             venues.push(new Venue(results.businesses[i]));
                         }
                         connection.query(UPDATE_YELP_RESULTS, [venues, eventId]);
+                        return venues;
                     });
             });
     },
