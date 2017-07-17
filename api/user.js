@@ -8,7 +8,7 @@ const ADD_USER = "INSERT INTO user_info VALUES($1, $2, $3, $4)";
 const GET_FRIENDS = "SELECT * FROM user_friends WHERE (user_one_id = $1 OR user_two_id = $1)";
 const GET_FRIENDS_INFO = "SELECT * FROM user_info WHERE user_id = ANY($1::BIGINT[])"
 const GET_EVENTS = "SELECT s.event_id, s.sender_id, s.receiver_id, s.status, d.event_time, d.location, d.sender_vote, d.receiver_vote, d.yelp_results FROM event_status s JOIN event_details d ON s.event_id = d.event_id WHERE (s.sender_id = $1 OR s.receiver_id = $1) AND NOT s.status = 2 AND d.event_time >= CURRENT_TIMESTAMP - INTERVAL '1 hour'";
-const ADD_FRIENDS = "INSERT INTO user_friends (user_one_id, user_two_id) VALUES %L";
+const ADD_FRIENDS = "INSERT INTO user_friends (user_one_id, user_two_id) VALUES %L ON CONFLICT DO NOTHING";
 
 module.exports = {
     login: function(id, firstName, lastName, profileImage, friends) {
@@ -20,10 +20,10 @@ module.exports = {
 
                 var rows = [];
                 for (var i = 0; i < friends.length; i++) {
-                    if (id <= friends[i]) rows.push([id, friends[i]]);
+                    if (parseInt(id) <= parseInt(friends[i])) rows.push([id, friends[i]]);
                     else rows.push([friends[i], id]);
                 }
-
+                
                 var add = format(ADD_FRIENDS, rows);
                 connection.query(add)
                     .catch(function(error) {
