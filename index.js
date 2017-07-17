@@ -17,9 +17,10 @@ app.post('/login', function(req, res) {
     var id = body.id;
     var firstName = body.firstName;
     var lastName = body.lastName;
+    var friends = body.friends;
     var profileImage = body.profileImage;
 
-    user.login(id, firstName, lastName, profileImage)
+    user.login(id, firstName, lastName, profileImage, friends)
         .then(function() {
             res.send({'success': true});
         })
